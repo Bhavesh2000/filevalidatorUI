@@ -17,7 +17,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Routes>
-          {/* <Route path="/" element={<Login />}></Route> */}
+          <Route path="/" element={<Fileupload />}></Route>
           <Route
             path="/dashboard"
             element={<Layout children={<Dashboard />} />}
