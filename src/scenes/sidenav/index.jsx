@@ -44,7 +44,7 @@ function Sidenav() {
         </MenuItem>
         <MenuItem
           icon={<FileUploadOutlinedIcon sx={{ fontSize: "2rem" }} />}
-          onClick={() => navigate("/fileupload")}
+          onClick={() => navigate("/")}
         >
           {" "}
           File Upload

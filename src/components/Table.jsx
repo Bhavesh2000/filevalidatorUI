@@ -88,36 +88,10 @@ export default function DataTable({ tableName, data, headers }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [bgcolor, setBgColor] = React.useState("");
-  // const [data, setData] = useState([]);
-  // const [headers, setHeaders] = useState([]);
-  // const [rowData, setRowData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-console.log(data);
-console.log(headers);
-
-  // const fetchData = async () => {
-  //   setLoading(true);
-  //   setError(null);
-  //   const fileId = sessionStorage.getItem("fileId");
-  //   try {
-  //     const response = await axios.get("http://localhost:3000/getInValidData");
-  //     const data1 = response.data;
-  //     console.log(data1.data);
-  //     const keys = extractKeys(data1.data);
-  //     console.log(keys);
-  //     setHeaders(keys);
-  //     setData(data1.data);
-  //   } catch (error) {
-  //     setError(error);
-  //   } finally {
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchData();
-  //   setLoading(false);
-  // }, []);
+  console.log(data);
+  console.log(headers);
 
   React.useEffect(() => {
     if (tableName.includes("In")) {
@@ -126,23 +100,26 @@ console.log(headers);
     } else setBgColor("green");
   }, []);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
-  return data.length <=0  ? (
-    <div></div>
+  return data.length <= 0 ? (
+    <div> loading ...</div>
   ) : (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
-      <Typography variant="h3" sx={{ textAlign: "center" }}>
+      <Typography
+        variant="h5"
+        sx={{
+          textAlign: "center",
+          backgroundColor: tableName.includes("In")
+            ? "#ee6860"
+            : tableName.includes("Valid")
+            ? "#7ee76d"
+            : "#fff",
+            // color: "#fff",
+            fontWeight: "bold"
+        }}
+      >
         {tableName}
       </Typography>
-      <TableContainer sx={{ maxHeight: 150 }}>
+      <TableContainer sx={{ maxHeight: 200 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead bg>
             <TableRow>
@@ -151,32 +128,15 @@ console.log(headers);
                   key={column}
                   // align={column.align}
                   // style={{ minWidth: column.minWidth }}
+                  sx={{
+                    fontWeight: "bold"
+                  }}
                 >
-                  {column}
+                  {column.toUpperCase()}
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
-          {/* <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === "number"
-                            ? column.format(value)
-                            : value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-          </TableBody> */}
           {data.length > 0 ? (
             <TableBody>
               {data
@@ -185,11 +145,7 @@ console.log(headers);
                   <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                     {headers.map((header) => {
                       const value = row[header];
-                      return (
-                        <TableCell key={header} >
-                          {value}
-                        </TableCell>
-                      );
+                      return <TableCell key={header}>{value}</TableCell>;
                     })}
                   </TableRow>
                 ))}
@@ -199,15 +155,6 @@ console.log(headers);
           )}
         </Table>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
     </Paper>
   );
 }

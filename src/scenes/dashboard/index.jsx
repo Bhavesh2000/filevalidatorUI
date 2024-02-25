@@ -1,9 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import FlexBox from "../../components/FlexBox";
 import { Box, Container, Paper, Typography } from "@mui/material";
 import DataTable from "../../components/Table";
 import axios from "axios";
-
 
 const extractKeys = (data) => {
   // Get all object keys (excluding special properties) using Object.keys and filter
@@ -19,15 +18,13 @@ const extractKeys = (data) => {
   return keys;
 };
 
-
-
 function Dashboard() {
   const [data, setData] = useState([]);
   const [invalidData, setInValidData] = useState([]);
   const [invalidheaders, setInvalidheaders] = useState([]);
   const [validheaders, setValidheaders] = useState([]);
   const [validData, setValidData] = useState([]);
-  const[summaryData, setSummaryData] = useState([
+  const [summaryData, setSummaryData] = useState([
     {
       label: "Total Records",
       value: 0,
@@ -40,17 +37,18 @@ function Dashboard() {
       label: "Errored Records",
       value: 0,
     },
-  ])
+  ]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const fileId = sessionStorage.getItem("fileId");
-
 
   const fetchInvalidData = async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`https://filevaildationbackend-1.onrender.com/getInValidDataByFileId/${fileId}`);
+      const response = await axios.get(
+        `https://filevaildationbackend-1.onrender.com/getInValidDataByFileId/${fileId}`
+      );
       const data1 = response.data;
       console.log(data1.data);
       const keys = extractKeys(data1.data);
@@ -67,7 +65,9 @@ function Dashboard() {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`https://filevaildationbackend-1.onrender.com/getValidDataByFileId/${fileId}`);
+      const response = await axios.get(
+        `https://filevaildationbackend-1.onrender.com/getValidDataByFileId/${fileId}`
+      );
       const data1 = response.data;
       console.log(data1.data);
       const keys = extractKeys(data1.data);
@@ -84,7 +84,9 @@ function Dashboard() {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`https://filevaildationbackend-1.onrender.com/getSummaryDataById/${fileId}`);
+      const response = await axios.get(
+        `https://filevaildationbackend-1.onrender.com/getSummaryDataById/${fileId}`
+      );
       const data = response.data;
       console.log(data);
       setData(data);
@@ -101,25 +103,24 @@ function Dashboard() {
           label: "Errored Records",
           value: data.data.inValidEntries,
         },
-      ])
-      
+      ]);
     } catch (error) {
       setError(error);
     } finally {
-      
     }
   };
 
-  useEffect(()=>{   
+  useEffect(() => {
     fetchSummaryData();
     fetchValidData();
     fetchInvalidData();
     setLoading(false);
-  },[])
- 
-  return (
-    loading ? (<div></div>) : 
-    (<Box
+  }, []);
+
+  return loading ? (
+    <div> loading ...</div>
+  ) : (
+    <Box
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -134,24 +135,31 @@ function Dashboard() {
             <Paper
               elevation={2}
               sx={{
-                padding: "1.2rem 1.2rem",
+                padding: "1rem 1rem",
                 width: "auto",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "space-between",
                 height: "auto",
+                backgroundColor: rec.label.includes("Errored")
+                  ? "#ee6860"
+                  : rec.label.includes("Validated")
+                  ? "#7ee76d"
+                  : "",
               }}
             >
-              <Typography variant="h3">{rec.label}</Typography>
-              <Typography variant="h3" sx={{ mt: 2 }}>
+              <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+                {rec.label}
+              </Typography>
+              <Typography variant="h5" sx={{ mt: 2, fontWeight: "bold" }}>
                 {rec.value}
               </Typography>
             </Paper>
           </Container>
         ))}
       </Box>
-      <Container maxWidth="xl" >
+      <Container maxWidth="xl">
         <Box
           sx={{
             mt: 2,
@@ -161,17 +169,28 @@ function Dashboard() {
             justifyContent: "space-between",
           }}
         >
-          <Box >
-          {validData &&  <DataTable data={validData} headers={validheaders} tableName={"Valid Record Table"}/>}
+          <Box>
+            {validData && (
+              <DataTable
+                data={validData}
+                headers={validheaders}
+                tableName={"Valid Record Table"}
+              />
+            )}
           </Box>
 
-          <Box >
-          {invalidData &&  <DataTable data={invalidData} headers={invalidheaders} tableName={"InValid Record Table"}/>}
+          <Box sx={{ mt: 2 }}>
+            {invalidData && (
+              <DataTable
+                data={invalidData}
+                headers={invalidheaders}
+                tableName={"Invalid Record Table"}
+              />
+            )}
           </Box>
-
         </Box>
       </Container>
-    </Box>)
+    </Box>
   );
 }
 

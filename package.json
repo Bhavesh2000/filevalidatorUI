@@ -19,6 +19,7 @@
     "FormData": "^0.10.1",
     "mui-file-input": "^4.0.4",
     "netlify": "^13.1.14",
+    "notistack": "^3.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-pro-sidebar": "^1.1.0",

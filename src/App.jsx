@@ -6,8 +6,8 @@ import React, { useMemo } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "./scenes/dashboard/index.jsx";
 import Fileupload from "./scenes/fileupload/index.jsx";
-// import Login from "./scenes/login"
 import Layout from "./layout.jsx";
+import { SnackbarProvider, useSnackbar } from "notistack";
 
 function App() {
   const mode = useSelector((state) => state.user.mode);
@@ -15,21 +15,19 @@ function App() {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Routes>
-          <Route
-            path="/"
-            element={<Layout children={<Fileupload />} />}
-          ></Route>
-          <Route
-            path="/dashboard"
-            element={<Layout children={<Dashboard />} />}
-          ></Route>
-          <Route
-            path="/fileupload"
-            element={<Layout children={<Fileupload />} />}
-          ></Route>
-        </Routes>
+        <SnackbarProvider>
+          <CssBaseline />
+          <Routes>
+            <Route
+              path="/"
+              element={<Layout children={<Fileupload />} />}
+            ></Route>
+            <Route
+              path="/dashboard"
+              element={<Layout children={<Dashboard />} />}
+            ></Route>
+          </Routes>
+        </SnackbarProvider>
       </ThemeProvider>
     </BrowserRouter>
   );

@@ -1,12 +1,23 @@
-import { Box, Button, Container, FormControl, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  FormControl,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { MuiFileInput } from "mui-file-input";
 import React from "react";
 import FlexBox from "../../components/FlexBox";
-import axios from 'axios'
+import axios from "axios";
+import { useSnackbar } from "notistack";
+import {useNavigate} from "react-router-dom";
 
 function Fileupload() {
   const [layoutFile, setLayoutFileValue] = React.useState([]);
   const [dataFile, setDataFileValue] = React.useState([]);
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
 
   const handleLayoutFileChange = (newValue) => {
     setLayoutFileValue(newValue);
@@ -24,17 +35,38 @@ function Fileupload() {
     formData.append("files", dataFile);
 
     try {
-      const response = await axios.post("https://filevaildationbackend-1.onrender.com/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        "https://filevaildationbackend-1.onrender.com/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       sessionStorage.setItem("fileId", response?.data?.fileId);
       console.log("Success!", response.data);
-      // Handle successful upload logic here (e.g., clear files, show success message)
+      enqueueSnackbar("Files uploaded successfully.", {
+        variant: "success",
+        anchorOrigin: {
+          vertical: "bottom",
+          horizontal: "center",
+        },
+        
+      });
+      setTimeout(() => {
+        navigate("/dashboard")
+      }, 5000);
     } catch (error) {
       console.error("Error uploading files:", error);
+      enqueueSnackbar("Could not upload files", {
+        variant: "error",
+        anchorOrigin: {
+          vertical: "bottom",
+          horizontal: "center",
+        },
+      });
       // Handle error logic here (e.g., show error message)
     }
   };
@@ -54,12 +86,12 @@ function Fileupload() {
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
-              p: 2
+              p: 2,
             }}
             elevation={2}
           >
             <Container maxWidth="xl">
-              <Typography variant="h4">Upload layout file</Typography>
+              <Typography variant="h5">Upload layout file</Typography>
               <MuiFileInput
                 value={layoutFile}
                 onChange={handleLayoutFileChange}
@@ -68,7 +100,7 @@ function Fileupload() {
               />
             </Container>
             <Container maxWidth="xl">
-              <Typography variant="h4">Upload data file</Typography>
+              <Typography variant="h5">Upload data file</Typography>
               <MuiFileInput
                 value={dataFile}
                 onChange={handleDataFileChange}
@@ -77,7 +109,14 @@ function Fileupload() {
               />
             </Container>
             <Container>
-              <Button variant="contained" type="Submit" onClick={handleSubmit} fullWidth>Upload</Button>
+              <Button
+                variant="contained"
+                type="Submit"
+                onClick={handleSubmit}
+                fullWidth
+              >
+                Upload
+              </Button>
             </Container>
           </Paper>
         </FormControl>
